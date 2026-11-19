@@ -1,0 +1,74 @@
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Game {
+    private static int nextId = 1;
+    // ArrayList is used because the total number of games in a season is dynamic
+    private static ArrayList<Game> gameLog = new ArrayList<>();
+
+    private int gameId;
+    private Team homeTeam;
+    private Team awayTeam;
+    private int homeScore;
+    private int awayScore;
+    private int temperature;
+
+    public Game(Team homeTeam, Team awayTeam, int temperature) {
+        this.gameId = nextId++;
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.temperature = temperature;
+
+        playGame();
+        gameLog.add(this);
+    }
+
+    // Simulates scores where warmer weather increases offensive output
+    private void playGame() {
+        Random rand = new Random();
+        // Scales max goals reasonably (e.g., 35°F -> max 3 goals, 90°F -> max 9 goals)
+        int maxGoals = Math.max(2, temperature / 10);
+
+        this.awayScore = rand.nextInt(maxGoals + 1);
+        this.homeScore = rand.nextInt(maxGoals + 1);
+
+        // Sync results back to each participating Team object
+        awayTeam.recordGameResult(awayScore, homeScore);
+        homeTeam.recordGameResult(homeScore, awayScore);
+    }
+
+    public static ArrayList<Game> getGameLog() {
+        return gameLog;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public Team getHomeTeam() {
+        return homeTeam;
+    }
+
+    public Team getAwayTeam() {
+        return awayTeam;
+    }
+
+    public int getHomeScore() {
+        return homeScore;
+    }
+
+    public int getAwayScore() {
+        return awayScore;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public void printGameStats() {
+        System.out.println("Game #" + gameId);
+        System.out.println("Temperature: " + temperature);
+        System.out.println("Away Team: " + awayTeam.getName() + ", " + awayScore);
+        System.out.println("Home Team: " + homeTeam.getName() + ", " + homeScore);
+    }
+}
