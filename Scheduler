@@ -1,0 +1,98 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+
+public class Scheduler {
+    // Fixed-size array is ideal since the league always has 4 teams
+    private Team[] teams;
+    private int consecutiveFreezingWeeks;
+    private static final int FREEZING_TEMP = 32;
+
+    public Scheduler(Team[] teams) {
+        this.teams = teams;
+        this.consecutiveFreezingWeeks = 0;
+    }
+
+    // Runs the weekly season loop until 3 consecutive freezing weeks occur
+    public void runSeason() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (consecutiveFreezingWeeks < 3) {
+            System.out.print("Enter Tuesday's temperature (F): ");
+            int temp;
+
+            // Prevents the program from crashing if non-numeric text is entered
+            try {
+                temp = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a whole number.");
+                continue;
+            }
+
+            if (temp <= FREEZING_TEMP) {
+                System.out.println("Too cold to play.");
+                consecutiveFreezingWeeks++;
+            } else {
+                // Reset counter because a playable week breaks the freezing streak
+                consecutiveFreezingWeeks = 0;
+                scheduleWeeklyGames(temp);
+            }
+        }
+
+        System.out.println("Season is over");
+        printSeasonSummary();
+        scanner.close();
+    }
+
+    // Shuffles teams to guarantee random matchups without duplicate teams
+    private void scheduleWeeklyGames(int temperature) {
+        ArrayList<Team> availableTeams = new ArrayList<>();
+        Collections.addAll(availableTeams, teams);
+        Collections.shuffle(availableTeams);
+
+        // Pair off all 4 shuffled teams into 2 distinct games
+        new Game(availableTeams.get(0), availableTeams.get(1), temperature);
+        new Game(availableTeams.get(2), availableTeams.get(3), temperature);
+    }
+
+    // Compiles and outputs final team records, game logs, and temperature metrics
+    private void printSeasonSummary() {
+        System.out.println("*********RESULTS*********");
+        for (Team team : teams) {
+            team.printStats();
+            System.out.println();
+        }
+
+        ArrayList<Game> games = Game.getGameLog();
+        if (games.isEmpty()) {
+            System.out.println("No games were played this season.");
+            return;
+        }
+
+        int hottestTemp = Integer.MIN_VALUE;
+        int totalTemp = 0;
+
+        for (Game game : games) {
+            game.printGameStats();
+            System.out.println();
+
+            int currentTemp = game.getTemperature();
+            if (currentTemp > hottestTemp) {
+                hottestTemp = currentTemp;
+            }
+            totalTemp += currentTemp;
+        }
+
+        double averageTemp = (double) totalTemp / games.size();
+        System.out.println("Hottest Temp: " + hottestTemp);
+        System.out.println("Average Temp: " + averageTemp);
+    }
+
+    public Team[] getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Team[] teams) {
+        this.teams = teams;
+    }
+}
