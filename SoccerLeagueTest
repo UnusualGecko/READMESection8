@@ -1,0 +1,14 @@
+public class SoccerLeagueTest {
+    public static void main(String[] args) {
+        // Initialize the 4 league teams in a standard array
+        Team[] leagueTeams = {
+            new Team("Team 1"),
+            new Team("Team 2"),
+            new Team("Team 3"),
+            new Team("Team 4")
+        };
+
+        Scheduler scheduler = new Scheduler(leagueTeams);
+        scheduler.runSeason();
+    }
+}
