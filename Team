@@ -1,0 +1,65 @@
+public class Team {
+    private String name;
+    private int wins;
+    private int losses;
+    private int ties;
+    private int goalsScored;
+    private int goalsAllowed;
+
+    public Team(String name) {
+        this.name = name;
+        this.wins = 0;
+        this.losses = 0;
+        this.ties = 0;
+        this.goalsScored = 0;
+        this.goalsAllowed = 0;
+    }
+
+    // Updates cumulative season stats based on a single game's outcome
+    public void recordGameResult(int scored, int allowed) {
+        this.goalsScored += scored;
+        this.goalsAllowed += allowed;
+
+        if (scored > allowed) {
+            this.wins++;
+        } else if (scored < allowed) {
+            this.losses++;
+        } else {
+            this.ties++;
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public int getTies() {
+        return ties;
+    }
+
+    public int getGoalsScored() {
+        return goalsScored;
+    }
+
+    public int getGoalsAllowed() {
+        return goalsAllowed;
+    }
+
+    public void printStats() {
+        System.out.println(name);
+        System.out.println("Wins: " + wins + ", Losses: " + losses + ", Ties: " + ties);
+        System.out.println("Points Scored: " + goalsScored + ", Points Allowed: " + goalsAllowed);
+    }
+}
